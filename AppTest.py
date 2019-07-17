@@ -4,13 +4,31 @@ import random
 
 # funtion
 results = []
+kids = []
+ran = []
 
 def Gacha():
     global results
     if not results:
         label1.config(text="Go Edit")
     else:
-        label1.config(text=str(random.choice(results)))
+        if len(results) != 10000:
+            a = 10000/len(results)
+            for i in results:
+                for j in range(0, int(a-1)):
+                    kids.append(i)
+            get = results + kids
+
+        ran.append(random.choice(get))
+        ran.reverse()
+        per = get.count(ran[0]) * 100 / 10000
+        sav = open("C:/Users/yh/Desktop/Eatcha.txt", "a")
+        for i in ran:
+            data = "name: " + i + "\n"
+            sav.write(data)
+        sav.close()
+
+        label1.config(text=str(ran[0]))
 
 def addList():
     global results
