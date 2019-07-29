@@ -4,46 +4,22 @@ import random
 
 # funtion
 lists = []
-results = []
 kids = []
 pick = []
 sav = {}
-
 count = 0
 
-def makeResults(pick):
-    global lists
-    global results
-    global count
-    
-    results = []
-    for i in lists:
-        results.append(i)
-    if pick:
-        for i in pick:
-            if i in results:
-                results.remove(i)
-
-    print(results)
-
 def Produce101():
-    global count
     global pick
-    global kids
-    global sav
 
-    pick.append(random.choice(kids))
-    
-    print('count: ', count, 'pick: ', pick[count])
-    
-    count += 1
-
-    print(len(kids), pick)
+    pick.insert(0, random.choice(lists))
+    lists.remove(pick[0])
+    lists.append(pick[0])
 
 def Gacha():
     global lists
-    global results
     global kids
+    global pick
     global count
 
     if not lists:
@@ -51,55 +27,119 @@ def Gacha():
 
     else:
         kids = []
-        stock = int(10000/len(lists))
-        penalty = int(stock*0.05)
-        chance = int(stock*0.01)
+        st = int(len(lists) / 2)
+        amount = int(10000 / len(lists))
 
-        makeResults(pick)
+        amount_pick = int(amount*0.05)
+        amount_sel = int(amount*0.02)
+        amount_div = int(amount_pick / len(lists))
 
-        if count == 0:
-            for i in lists:
-                for j in range(stock):
-                    kids.append(i)
-            
-        elif count == 1:
-            kids = []
+        amount_total = amount + amount_div + int((amount_sel*(count-1))/len(lists))
+        st_total = amount + amount_div + int((amount_sel*st)/len(lists))
 
-            pick_cal = stock - penalty
-            results_cal = int((10000-pick_cal)/len(results))
+        excep_pick = int(amount*0.07)
+        excep_sel = int(amount*0.03)
+        excep_div = int(excep_pick /len(lists))
 
-            for i in range(pick_cal):
-                kids.append(pick[count-1])
-
-            for i in results:
-                for j in range(results_cal):
-                    kids.append(i)
-
-        else:
-            kids = []
-
-            double_cal = stock - penalty - chance
-            chance_cal = stock - chance
-            results_cal = int((10000-double_cal)/len(lists))
-
-            print(len(lists), len(results), double_cal, chance_cal, results_cal)
-
-            for i in pick:
-                for j in range(chance_cal):
-                    kids.append(i)
-                print('append pick: ', len(kids)) 
-
-            for i in results:
-                for j in range(int(results_cal/len(results))):
-                    kids.append(i)
-                print('append results: ', len(kids)) 
-
-            if pick[count-1] == pick[count-2]:
-                for j in range(double_cal):
-                    kids.append(pick[count-1])
-                print('append other: ', len(kids))
+        excep_amount_total = amount + excep_div + int((excep_sel*(count-1))/len(lists))
+        excep_st_total = amount + excep_div + int((excep_sel*st)/len(lists))
 
         Produce101()
+
+        if count == 0:
+            for i in range(len(lists)):
+                for j in range(amount):
+                    kids.append(lists[i])
+            print('a ', len(kids))
+
+        if count == 1:
+            for i in range(len(lists)-1):
+                for j in range(amount+amount_div):
+                    kids.append(lists[i])
+
+            for i in range(amount-amount_pick):
+                kids.append(lists[len(lists)-1])
+
+            while len(kids) < 10000:
+                kids.append(random.choice(lists))
+                if len(kids) == 10000:
+                    break
+            print('b ', len(kids))
+
+        if count > 1 and count < st:
+            if pick[0] == lists[len(lists)-1]:
+                for i in range(len(lists)-count):
+                    for j in range(excep_amount_total):
+                        kids.append(lists[i])
+
+                for i in range(amount-excep_pick):
+                    kids.append(lists[len(lists)-1])
+
+                for i in range(len(lists)-count, len(lists)-1):
+                    for j in range(amount-excep_sel):
+                        kids.append(lists[i]) 
+
+            else:
+                for i in range(len(lists)-count):
+                    for j in range(amount_total):
+                        kids.append(lists[i])
+
+                for i in range(amount-amount_pick):
+                    kids.append(lists[len(lists)-1])
+
+                for i in range(len(lists)-count, len(lists)-1):
+                    for j in range(amount-amount_sel):
+                        kids.append(lists[i])
+
+            while len(kids) < 10000:
+                kids.append(random.choice(lists))
+                if len(kids) == 10000:
+                    break
+
+            print('c ', len(kids))
+
+
+        if count >= st:
+            if pick[0] == lists[len(lists)-1]:
+                for i in range(st):
+                    for j in range(excep_st_total):
+                        kids.append(lists[i])
+
+                for i in range(amount-excep_pick):
+                    kids.append(lists[len(lists)-1])
+
+                for i in range(st, len(lists)-1):
+                    for j in range(amount-excep_sel):
+                        kids.append(lists[i])
+
+            else:
+                for i in range(st):
+                    for j in range(st_total):
+                        kids.append(lists[i])
+
+                for i in range(amount-amount_pick):
+                    kids.append(lists[len(lists)-1])
+
+                for i in range(st, len(lists)-1):
+                    for j in range(amount-amount_sel):
+                        kids.append(lists[i])  
+
+            while len(kids) < 10000:
+                kids.append(random.choice(lists))
+                if len(kids) == 10000:
+                    break
+            print('d ', len(kids))
+
+
+
+        print(len(kids), lists)
+
+        print('pick: ', lists[len(lists)-1], 'pickList: ', pick, 'count: ', count)
+        count += 1
+        print('1: ', kids.count(lists[0]))
+        print('2: ', kids.count(lists[1]))
+        print('3: ', kids.count(lists[2]))
+        print('4: ', kids.count(lists[3]))
 
         sav = open("C:/Users/yh/Desktop/Eatcha.txt", "a")
         for i in lists:
@@ -107,7 +147,7 @@ def Gacha():
             sav.write(data)
         sav.close()
 
-        label1.config(text=str(pick[count-1]))
+        label1.config(text=str(lists[len(lists)-1]))
 
 def addList():
     global lists
@@ -125,8 +165,8 @@ def delList():
     value = listbox.get(selection[0])
     index = lists.index(value)
     length = len(selection)
-    del lists[index:]
-    listbox.delete(selection[0], (length+1))
+    del lists[index]
+    listbox.delete(selection[0], selection[0])
 
 def savList():
     global lists
@@ -139,6 +179,15 @@ def savList():
     sav.close()
     buttonSav.config(text="Complete")
     print(sav)
+
+def resetList():
+    global count
+    global pick
+
+    count = 0
+    del pick[0:]
+    
+    label1.config(text=str('RESET'))
 
 # default setting
 root = Tk()
@@ -159,6 +208,9 @@ label1.pack()
 
 buttonPick = Button(frame1, width=12, height=3, text="Eatcha!!!", font=('arial', 12, 'bold'), overrelief="solid", command=Gacha)
 buttonPick.pack()
+
+buttonRe = Button(frame1, width=20, height=1, text="Reset",font=('arial', 7), overrelief="solid", command=resetList)
+buttonRe.pack()
 
 # frame No.2
 frame2 = Frame(root)
@@ -187,7 +239,7 @@ buttonSav.grid(row=5, column=2, sticky='S')
 # frame No.3
 frame3 = Frame(root)
 notebook.add(frame3, text="result")
-label3 = Label(frame3, text="test_page_3")
+label3 = Label(frame3, text="test_page")
 label3.pack()
 
 # Main
