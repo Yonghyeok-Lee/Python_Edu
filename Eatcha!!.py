@@ -6,7 +6,7 @@ import random
 lists = []
 kids = []
 pick = []
-sav = {}
+
 count = 0
 
 def Produce101():
@@ -15,6 +15,29 @@ def Produce101():
     pick.insert(0, random.choice(lists))
     lists.remove(pick[0])
     lists.append(pick[0])
+
+def History(kids):
+    global lists
+    global pick
+    global count
+
+    get = {}
+
+    percentage = float(kids.count(pick[0]) / 10000 * 100)
+    key_val = 'Selection : ' + pick[0] + ', Percentage : ' + str(round(percentage,4))
+    get[count] = key_val
+
+    set_val = "$$ " + str(count) + " $$ E.A.T.C.H.A " + "\n\n" + " Get!! : " + get[count]
+	
+    sav = open("C:/Users/Public/Eatcha_pickUp.txt", "a")
+    for i in lists:
+        data = "Today~ Pick!! : " + i + ', Percentage : ' + str(round(percentage,4)) + '%' + '\n' 
+        sav.write(data)
+    sav.close()
+	
+    label1.config(text=str(lists[len(lists)-1]))
+    label3.config(text=str(set_val))
+
 
 def Gacha():
     global lists
@@ -50,7 +73,6 @@ def Gacha():
             for i in range(len(lists)):
                 for j in range(amount):
                     kids.append(lists[i])
-            print('a ', len(kids))
 
         if count == 1:
             for i in range(len(lists)-1):
@@ -64,7 +86,6 @@ def Gacha():
                 kids.append(random.choice(lists))
                 if len(kids) == 10000:
                     break
-            print('b ', len(kids))
 
         if count > 1 and count < st:
             if pick[0] == lists[len(lists)-1]:
@@ -96,9 +117,6 @@ def Gacha():
                 if len(kids) == 10000:
                     break
 
-            print('c ', len(kids))
-
-
         if count >= st:
             if pick[0] == lists[len(lists)-1]:
                 for i in range(st):
@@ -128,26 +146,10 @@ def Gacha():
                 kids.append(random.choice(lists))
                 if len(kids) == 10000:
                     break
-            print('d ', len(kids))
 
-
-
-        print(len(kids), lists)
-
-        print('pick: ', lists[len(lists)-1], 'pickList: ', pick, 'count: ', count)
         count += 1
-        print('1: ', kids.count(lists[0]))
-        print('2: ', kids.count(lists[1]))
-        print('3: ', kids.count(lists[2]))
-        print('4: ', kids.count(lists[3]))
 
-        sav = open("C:/Users/yh/Desktop/Eatcha.txt", "a")
-        for i in lists:
-            data = "name: " + i + "\n"
-            sav.write(data)
-        sav.close()
-
-        label1.config(text=str(lists[len(lists)-1]))
+        History(kids)
 
 def addList():
     global lists
@@ -172,13 +174,12 @@ def savList():
     global lists
     if not lists:
         return buttonSav.config(text="No List")
-    sav = open("C:/Users/yh/Desktop/Eatcha.txt", "a")
+    sav = open("C:/Users/Public/Eatcha_savList.txt", "a")
     for i in lists:
-        data = "name: " + i + "\n"
+        data = "selection : " + i + "\n"
         sav.write(data)
     sav.close()
     buttonSav.config(text="Complete")
-    print(sav)
 
 def resetList():
     global count
@@ -239,7 +240,7 @@ buttonSav.grid(row=5, column=2, sticky='S')
 # frame No.3
 frame3 = Frame(root)
 notebook.add(frame3, text="result")
-label3 = Label(frame3, text="test_page")
+label3 = Label(frame3, text="results_page", height=15, padx=2, pady=2, font=('arial', 12, 'normal'))
 label3.pack()
 
 # Main
